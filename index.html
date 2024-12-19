@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HopeCity GPT</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #chat-container { max-width: 500px; margin: auto; }
+        #chat-output { height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; }
+        #chat-input { width: 100%; padding: 10px; margin-top: 10px; }
+        button { padding: 10px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h1>HopeCity GPT</h1>
+        <div id="chat-output"></div>
+        <input id="chat-input" type="text" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const message = document.getElementById('chat-input').value;
+            const response = await fetch('/.netlify/functions/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
+            const data = await response.json();
+            const chatOutput = document.getElementById('chat-output');
+            chatOutput.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+            chatOutput.innerHTML += `<p><strong>HopeCity GPT:</strong> ${data.reply}</p>`;
+        }
+    </script>
+</body>
+</html>
