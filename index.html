@@ -17,22 +17,60 @@
         <h1>HopeCity GPT</h1>
         <div id="chat-output"></div>
         <input id="chat-input" type="text" placeholder="Type your message..." />
-        <button onclick="sendMessage()">Send</button>
+        <!-- <button onclick="sendMessage()">Send</button> -->
+        <button id="send-btn">Send</button>
+
     </div>
 
     <script>
-        async function sendMessage() {
-            const message = document.getElementById('chat-input').value;
-            const response = await fetch('/.netlify/functions/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message })
-            });
-            const data = await response.json();
-            const chatOutput = document.getElementById('chat-output');
-            chatOutput.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
-            chatOutput.innerHTML += `<p><strong>HopeCity GPT:</strong> ${data.reply}</p>`;
+        document.getElementById('send-btn').addEventListener('click', sendMessage);
+
+async function sendMessage() {
+    const message = document.getElementById('chat-input').value;
+
+    // Prevent empty messages from being sent
+    if (!message.trim()) {
+        alert('Please type a message.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/.netlify/functions/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch response');
         }
+
+        const data = await response.json();
+
+        const chatOutput = document.getElementById('chat-output');
+        chatOutput.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+        chatOutput.innerHTML += `<p><strong>HopeCity GPT:</strong> ${data.reply}</p>`;
+
+        // Clear input field
+        document.getElementById('chat-input').value = '';
+    } catch (error) {
+        console.error(error);
+        alert('Something went wrong. Please try again.');
+    }
+}
+
+        // async function sendMessage() {
+        //    const message = document.getElementById('chat-input').value;
+         //   const response = await fetch('/.netlify/functions/chat', {
+        //        method: 'POST',
+         //      headers: { 'Content-Type': 'application/json' },
+          //      body: JSON.stringify({ message })
+         //   });
+         //   const data = await response.json();
+          //  const chatOutput = document.getElementById('chat-output');
+          //  chatOutput.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+          //  chatOutput.innerHTML += `<p><strong>HopeCity GPT:</strong> ${data.reply}</p>`;
+       // }
     </script>
 </body>
 </html>
