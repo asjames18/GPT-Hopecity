@@ -2,12 +2,12 @@ const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
     try {
+        // Parse the incoming message
         const { message } = JSON.parse(event.body);
-
         if (!message) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ error: 'Message is required.' })
+                body: JSON.stringify({ error: 'Message is required.' }),
             };
         }
 
@@ -30,13 +30,12 @@ exports.handler = async (event) => {
         }
 
         const data = await response.json();
-
         return {
             statusCode: 200,
             body: JSON.stringify({ reply: data.choices[0].text.trim() }),
         };
     } catch (error) {
-        console.error(error);
+        console.error('Error:', error.message);
         return {
             statusCode: 500,
             body: JSON.stringify({ error: 'Internal Server Error' }),
